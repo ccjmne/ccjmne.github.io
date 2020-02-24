@@ -1,0 +1,29 @@
+{
+  "name": "ccjmne.github.io",
+  "version": "0.9.0",
+  "description": "My personal website",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccjmne/ccjmne.github.io.git"
+  },
+  "keywords": [
+    "usetheplatform",
+    "personal",
+    "website",
+    "ccjmne",
+    "typescript",
+    "sass",
+    "webpack",
+    "vanilla"
+  ],
+  "author": "Eric NICOLAS <ccjmne@gmail.com> (ccjmne)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ccjmne/ccjmne.github.io/issues"
+  },
+  "homepage": "https://github.com/ccjmne/ccjmne.github.io#readme"
+}
