@@ -28,14 +28,17 @@ const assets = resolve(__dirname, 'assets');
 const src = resolve(__dirname, 'src');
 const sass = resolve(__dirname, 'sass');
 
-export default (_env: string, argv: { mode?: 'production' | 'development', analyze?: boolean }): Configuration => ({
+export default (_env: string, { mode, analyze }: { mode?: 'production' | 'development', analyze?: boolean }): Configuration => ({
   entry: {
     'main': resolve(src, 'index.ts'),
-    'global-styles': resolve(src, 'main.scss'),
+    'main-styles': resolve(src, 'main.scss'),
   },
-  devtool: (argv.mode === 'production' ? false : 'cheap-module-eval-source-map'),
+  devtool: (mode === 'production' ? false : 'cheap-module-eval-source-map'),
   optimization: {
     usedExports: true,
+  },
+  resolve: {
+    modules: [src, 'node_modules'],
   },
   module: {
     rules: [{
@@ -56,14 +59,25 @@ export default (_env: string, argv: { mode?: 'production' | 'development', analy
         },
       }],
     }, {
+      test: /\.ts$/,
+      exclude: /node_modules/,
+      use: [{
+        loader: 'ts-loader',
+      }],
+    }, {
       test: /\.html$/,
       use: [{
         loader: 'html-loader',
         options: {
-          attrs: ['img:src', 'img:data-src', 'video:src', 'video:data-src'],
-          interpolate: true,
-          root: __dirname,
-          minimize: argv.mode === 'production' && HTML_MINIFY_OPTS,
+          attributes: {
+            list: [
+              { tag: 'img', attribute: 'src', type: 'src' },
+              { tag: 'img', attribute: 'data-src', type: 'src' },
+              { tag: 'video', attribute: 'src', type: 'src' },
+              { tag: 'video', attribute: 'data-src', type: 'src' },
+            ],
+          },
+          minimize: mode === 'production' && HTML_MINIFY_OPTS,
         },
       }],
     }, {
@@ -111,22 +125,23 @@ export default (_env: string, argv: { mode?: 'production' | 'development', analy
     }],
   },
   plugins: [].concat(
-    argv.mode === 'production' ? new CleanWebpackPlugin() : [],
+    mode === 'production' ? new CleanWebpackPlugin() : [],
     new CopyWebpackPlugin([{ from: resolve(assets, 'favicons'), to: 'favicons' }]),
-    argv.analyze ? new BundleAnalyzerPlugin() : [],
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css',
-    }),
+    analyze ? new BundleAnalyzerPlugin() : [],
     new HtmlWebpackPlugin({
       template: resolve(__dirname, 'index.html'),
-      chunks: ['commons', 'main', 'logo'],
+      cache: false, // style-ext plugin doesn't properly notify changes
+      chunks: ['main'],
       chunksSortMode: 'manual',
       minify: HTML_MINIFY_OPTS,
       meta: { author, description, repository, keywords: keywords.join(', ') },
     }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: 'chunk-[id].css',
+    }),
     new ScriptExtHtmlWebpackPlugin({ defaultAttribute: 'defer' }),
-    new StyleExtHtmlWebpackPlugin(),
-    argv.mode === 'production' ? new ImageminPlugin({}) : [],
+    new StyleExtHtmlWebpackPlugin(), // ideally would the specific { chunks: ['main-styles'] } currently broken option
+    mode === 'production' ? new ImageminPlugin({}) : [],
   ),
 });

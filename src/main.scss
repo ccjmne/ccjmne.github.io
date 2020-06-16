@@ -1,10 +1,10 @@
-body,
-html {
-  height: 100%;
-}
-
 body {
   background-color: $background;
   color: $colour-one;
   font-family: sans-serif;
+}
+
+html, body, #container {
+  height: 100%;
+  width: 100%;
 }
