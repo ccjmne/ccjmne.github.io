@@ -25,15 +25,32 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v1.4.2
 
-# Runs a single command using the runners shell
+    # Runs a single command using the runners shell
     - name: Run a one-line script
       run: npm install
 
     - name: Run a one-line script
       run: npm run build
 
+    - name: Push git subdirectory as branch
+      uses: s0/git-publish-subdir-action@v2.3.0
+
     # Runs a set of commands using the runners shell
     - name: Run a multi-line script
       run: |
         echo Add other actions to build,
         echo test, and deploy your project.
+
+  deploy:
+    name: Publish to GitHub pages
+    runs-on: ubuntu-latest    
+    steps:
+
+    # Deploy to local repo
+    - name: Publish
+      uses: s0/git-publish-subdir-action@master
+      env:
+        REPO: self
+        BRANCH: gh-pages
+        FOLDER: dist
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
