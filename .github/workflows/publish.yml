@@ -1,9 +1,5 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches: [ master ]
@@ -15,8 +11,8 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v1.4.2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v1.4.2
 
   build:
     needs: setup
@@ -24,26 +20,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Run a one-line script
-      run: npm install
-
-    - name: Run a one-line script
-      run: npm run build
-
-    - name: Push git subdirectory as branch
-      uses: s0/git-publish-subdir-action@v2.3.0
+    - name: npm build
+      run: |
+        npm install
+        npm run build
 
   deploy:
     name: Publish to GitHub pages
     needs: build
     runs-on: ubuntu-latest    
     steps:
-
     - name: Publish
       uses: s0/git-publish-subdir-action@master
       env:
-        REPO: git@github.com:ccjmne/ccjmne.github.io.git
+        REPO: self
         BRANCH: gh-pages
         FOLDER: dist
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
