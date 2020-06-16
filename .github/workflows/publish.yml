@@ -43,7 +43,7 @@ jobs:
     - name: Publish
       uses: s0/git-publish-subdir-action@master
       env:
-        REPO: self
+        REPO: git@github.com:ccjmne/ccjmne.github.io.git
         BRANCH: gh-pages
         FOLDER: dist
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
