@@ -4,7 +4,37 @@ body {
   font-family: sans-serif;
 }
 
-html, body, #container {
-  height: 100%;
+body,
+html {
   width: 100%;
+  margin: 0;
+}
+
+#container {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  animation: blur 10s ease 0s infinite alternate;
+  @keyframes blur {
+    0% {
+      filter: sepia(0);
+    }
+
+    100% {
+      filter: sepia(360);
+    }
+  }
+
+  &::before {
+    // content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: .5;
+    background-color: black;
+  }
 }
